@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sơ Đồ Tư Duy Toán 6 - Chương 1 (Responsive)</title>
+  <title>Sơ Đồ Tư Duy Toán 6 - Chương 1</title>
   <style>
     * {
       box-sizing: border-box;
@@ -11,7 +11,7 @@
       padding: 0;
       user-select: none;
       -webkit-user-select: none;
-      touch-action: none; /* Khóa cuộn mặc định để thao tác pan/zoom mượt mà */
+      touch-action: none;
     }
     body {
       background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
@@ -31,7 +31,6 @@
       width: 100%;
       height: 100%;
     }
-    /* Thanh công cụ thích ứng điện thoại */
     .controls {
       position: absolute;
       bottom: 12px;
@@ -91,7 +90,7 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
         Về giữa
       </button>
-      <span class="hint-text">💡 Kéo để di chuyển, cuộn để zoom</span>
+      <span class="hint-text">💡 Kéo để cuộn xem hết các bài</span>
     </div>
   </div>
 
@@ -100,7 +99,6 @@
     const ctx = canvas.getContext('2d');
 
     let width, height, dpr;
-    // Tọa độ camera (Pan & Zoom)
     let camera = { x: 0, y: 0, zoom: 1 };
     let isDragging = false;
     let dragStart = { x: 0, y: 0 };
@@ -115,19 +113,16 @@
       canvas.height = height * dpr;
       ctx.scale(dpr, dpr);
 
-      // Tự động căn chỉnh zoom ban đầu theo kích thước thiết bị
+      // Cân chỉnh camera để thấy trọn vẹn cả đèn và các bài đầu tiên
       if (width < 600) {
-        // Màn hình điện thoại dọc
-        camera.zoom = Math.min(width / 420, 0.85);
+        camera.zoom = Math.min((width - 32) / 380, 1.0);
         camera.x = 0;
-        camera.y = -height * 0.18;
+        camera.y = height * 0.28; // Đẩy khung nhìn lên trên
       } else if (width < 1024) {
-        // iPad / Máy tính bảng
-        camera.zoom = Math.min(width / 880, 0.95);
+        camera.zoom = Math.min(width / 950, 0.95);
         camera.x = 0;
         camera.y = 0;
       } else {
-        // Laptop / Màn hình lớn
         camera.zoom = 1;
         camera.x = 0;
         camera.y = 0;
@@ -196,46 +191,48 @@
 
     let animProgress = 0;
 
-    // Tính kích thước thẻ thích ứng
     function getCardDims(branch) {
       const isMobile = width < 768;
-      const cardW = isMobile ? 360 : 430;
-      const lineHeight = isMobile ? 18 : 20;
+      const cardW = isMobile ? 355 : 440;
+      const lineHeight = isMobile ? 18.5 : 20;
       const headerPadding = 34;
       const bottomPadding = 16;
       const cardH = headerPadding + (branch.items.length * lineHeight) + bottomPadding;
       return { cardW, cardH, lineHeight, headerPadding };
     }
 
-    // Tọa độ thông minh theo chế độ Mobile vs Desktop
-    function getTargetCoordinates(branch) {
+    // Tọa độ bài học trên Mobile và Desktop
+    function getBranchTargetPos(branch) {
       const isMobile = width < 768;
       if (isMobile) {
-        // Chế độ dọc: Đèn ở trên (0, -320), các thẻ xếp thẳng hàng dọc
+        // Dạng danh sách dọc cách đều nhau
         const targetX = 0;
-        const startY = -120;
-        const stepY = 240;
-        const targetY = startY + branch.slotMobile * stepY;
-        return { x: targetX, y: targetY, isMobile: true };
+        const heights = [165, 205, 185, 185]; // Ước lượng chiều cao các thẻ
+        let currentY = -240; // Điểm bắt đầu của thẻ 1 sau bóng đèn
+        for (let i = 0; i < branch.slotMobile; i++) {
+          currentY += heights[i] + 32;
+        }
+        return { x: targetX, y: currentY, isMobile: true };
       } else {
-        // Chế độ 4 góc: Laptop & iPad ngang
         const isLeft = branch.side === 'left';
         const isTop = branch.row === 'top';
-        const targetX = isLeft ? -420 : 420;
+        const targetX = isLeft ? -430 : 430;
         const targetY = isTop ? -180 : 180;
         return { x: targetX, y: targetY, isMobile: false, isLeft };
       }
     }
 
-    function getCenterBulbPos() {
+    // Vị trí tâm bóng đèn
+    function getBulbPos() {
       const isMobile = width < 768;
-      return isMobile ? { x: 0, y: -260 } : { x: 0, y: 0 };
+      // Trên Mobile, hạ bóng đèn xuống tọa độ y = -360 để không bị cấn thanh URL
+      return isMobile ? { x: 0, y: -360 } : { x: 0, y: 0 };
     }
 
     function drawCenterBulb(bx, by, time) {
-      const pulse = Math.sin(time * 0.0035) * 6;
+      const pulse = Math.sin(time * 0.0035) * 5;
 
-      const glowGrad = ctx.createRadialGradient(bx, by, 10, bx, by, 100 + pulse);
+      const glowGrad = ctx.createRadialGradient(bx, by, 10, bx, by, 90 + pulse);
       glowGrad.addColorStop(0, 'rgba(255, 230, 100, 0.95)');
       glowGrad.addColorStop(0.3, 'rgba(255, 195, 45, 0.35)');
       glowGrad.addColorStop(0.7, 'rgba(255, 160, 10, 0.08)');
@@ -243,7 +240,7 @@
 
       ctx.fillStyle = glowGrad;
       ctx.beginPath();
-      ctx.arc(bx, by, 100 + pulse, 0, Math.PI * 2);
+      ctx.arc(bx, by, 90 + pulse, 0, Math.PI * 2);
       ctx.fill();
 
       // Thân đèn
@@ -251,7 +248,7 @@
       ctx.shadowColor = '#fbc531';
       ctx.shadowBlur = 18;
       ctx.beginPath();
-      ctx.arc(bx, by - 7, 24, 0, Math.PI * 2);
+      ctx.arc(bx, by - 6, 23, 0, Math.PI * 2);
       ctx.fillStyle = '#fff969';
       ctx.fill();
 
@@ -259,15 +256,15 @@
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 2.2;
       ctx.beginPath();
-      ctx.moveTo(bx - 7, by - 5);
-      ctx.lineTo(bx, by - 14);
-      ctx.lineTo(bx + 7, by - 5);
+      ctx.moveTo(bx - 7, by - 4);
+      ctx.lineTo(bx, by - 13);
+      ctx.lineTo(bx + 7, by - 4);
       ctx.stroke();
 
       ctx.shadowBlur = 0;
       ctx.fillStyle = '#94a3b8';
       ctx.beginPath();
-      ctx.roundRect(bx - 10, by + 15, 20, 10, [0, 0, 5, 5]);
+      ctx.roundRect(bx - 10, by + 16, 20, 10, [0, 0, 5, 5]);
       ctx.fill();
       ctx.restore();
 
@@ -286,47 +283,52 @@
       ctx.fillText("💡 TOÁN 6: SỐ TỰ NHIÊN", bx, by + 50);
     }
 
+    // Vẽ từng nhánh bài học
     function drawBranchCard(bx, by, branch, t) {
       if (t <= 0) return;
 
-      const target = getTargetCoordinates(branch);
+      const target = getBranchTargetPos(branch);
       const ease = 1 - Math.pow(1 - t, 3);
       const currX = bx + (target.x - bx) * ease;
       const currY = by + (target.y - by) * ease;
 
       const { cardW, cardH, lineHeight, headerPadding } = getCardDims(branch);
       const cardX = currX - cardW / 2;
-      const cardY = currY - cardH / 2;
+      const cardY = currY; // Cho thẻ tính từ đỉnh xuống
 
-      // Đường dây nối
+      // 1. Đường dây nối: Nối chính xác vào mép hộp, không đâm xuyên
       ctx.save();
       const lineGrad = ctx.createLinearGradient(bx, by, currX, currY);
       lineGrad.addColorStop(0, 'rgba(255, 235, 120, 0.7)');
       lineGrad.addColorStop(1, branch.color);
       ctx.strokeStyle = lineGrad;
-      ctx.lineWidth = 1.8;
+      ctx.lineWidth = 2;
 
       ctx.beginPath();
-      ctx.moveTo(bx, by);
       if (target.isMobile) {
-        // Mobile uốn từ trên xuống
-        ctx.bezierCurveTo(bx, by + 50, currX, cardY - 40, currX, cardY);
+        // Trên điện thoại: Đường rẽ nhánh từ trục bên trái bo cong vào đỉnh/mép hộp
+        const trunkX = -cardW / 2 - 14;
+        ctx.moveTo(bx, by + 60);
+        ctx.lineTo(trunkX, by + 60);
+        ctx.lineTo(trunkX, cardY + 22);
+        ctx.lineTo(cardX, cardY + 22);
       } else {
-        // Desktop uốn sang hai bên
+        // Desktop: Bo cong mềm vào 2 bên mép
         const edgeX = target.isLeft ? (cardX + cardW) : cardX;
+        ctx.moveTo(bx, by);
         ctx.bezierCurveTo(
           bx + (target.isLeft ? -90 : 90), by,
-          edgeX + (target.isLeft ? 70 : -70), currY,
-          edgeX, currY
+          edgeX + (target.isLeft ? 70 : -70), cardY + cardH / 2,
+          edgeX, cardY + cardH / 2
         );
       }
       ctx.stroke();
       ctx.restore();
 
-      // Vẽ Card
+      // 2. Vẽ hộp kiến thức
       ctx.save();
       ctx.globalAlpha = Math.min(1, ease * 1.5);
-      ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
+      ctx.fillStyle = "rgba(15, 23, 42, 0.96)";
       ctx.strokeStyle = branch.color;
       ctx.lineWidth = 1.4;
       ctx.beginPath();
@@ -334,25 +336,25 @@
       ctx.fill();
       ctx.stroke();
 
-      // Viền nhấn màu
+      // Viền màu trang trí ở mép trái
       ctx.fillStyle = branch.color;
       ctx.beginPath();
       ctx.roundRect(cardX, cardY, 5, cardH, [10, 0, 0, 10]);
       ctx.fill();
 
-      // Tiêu đề
+      // Tiêu đề nhánh
       ctx.fillStyle = "#ffffff";
       ctx.font = "bold 13px 'Segoe UI', sans-serif";
       ctx.textAlign = "left";
       ctx.fillText(branch.title, cardX + 16, cardY + 22);
 
-      // Danh sách kiến thức
+      // Chi tiết các ý
       ctx.font = "11px 'Segoe UI', sans-serif";
       branch.items.forEach((item, idx) => {
-        const itemThreshold = 0.15 + idx * 0.08;
+        const itemThreshold = 0.12 + idx * 0.07;
         if (ease >= itemThreshold) {
           ctx.fillStyle = branch.color;
-          const textY = cardY + headerPadding + idx * lineHeight + 11;
+          const textY = cardY + headerPadding + idx * lineHeight + 12;
           ctx.fillText("•", cardX + 14, textY);
           ctx.fillStyle = "#e2e8f0";
           ctx.fillText(item, cardX + 25, textY);
@@ -363,23 +365,25 @@
 
     function render(time) {
       if (animProgress < 1) {
-        animProgress += 0.012;
+        animProgress += 0.014;
         if (animProgress > 1) animProgress = 1;
       }
 
       ctx.clearRect(0, 0, width, height);
 
       ctx.save();
-      // Áp dụng Pan & Zoom theo tâm màn hình
+      // Camera Pan & Zoom
       ctx.translate(width / 2 + camera.x, height / 2 + camera.y);
       ctx.scale(camera.zoom, camera.zoom);
 
-      const bulbPos = getCenterBulbPos();
+      const bulbPos = getBulbPos();
 
+      // Vẽ các thẻ bài học
       branches.forEach(branch => {
         drawBranchCard(bulbPos.x, bulbPos.y, branch, animProgress);
       });
 
+      // Vẽ bóng đèn đè lên dây gốc
       drawCenterBulb(bulbPos.x, bulbPos.y, time);
 
       ctx.restore();
@@ -387,7 +391,7 @@
       requestAnimationFrame(render);
     }
 
-    // ==== XỬ LÝ CẢM ỨNG & KÉO THẢ (TOUCH / MOUSE) ====
+    // ==== THAO TÁC CẢM ỨNG & CHUỘT ====
     window.addEventListener('mousedown', (e) => {
       isDragging = true;
       dragStart = { x: e.clientX - camera.x, y: e.clientY - camera.y };
@@ -407,7 +411,7 @@
       camera.zoom = Math.min(Math.max(camera.zoom * zoomFactor, 0.4), 2.2);
     }, { passive: false });
 
-    // Touch trên Mobile / iPad
+    // Touch trên Mobile
     window.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
         isDragging = true;

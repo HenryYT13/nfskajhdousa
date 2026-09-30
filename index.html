@@ -2,298 +2,548 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sơ Đồ Tư Duy: Toán 6 - Số Tự Nhiên</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sơ Đồ Tư Duy Toán 6 - Chuẩn Mindmap & Xuất Video</title>
   <style>
-    :root {
-      --bg-dark: #070b14;
-      --card-bg: rgba(15, 23, 42, 0.94);
-      --c1: #38bdf8;
-      --c2: #34d399;
-      --c3: #fbbf24;
-      --c4: #f87171;
-    }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
     }
     body {
-      background: radial-gradient(circle at 50% 15%, #131d36 0%, #060911 100%);
+      background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
       color: #fff;
       font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 14px 40px;
+      justify-content: center;
     }
-
-    /* VÙNG BÓNG ĐÈN TRUNG TÂM */
-    .bulb-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      margin-bottom: 24px;
-      z-index: 5;
-    }
-    .bulb-glow {
-      position: absolute;
-      top: -20px;
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle, rgba(251, 197, 49, 0.85) 0%, rgba(251, 197, 49, 0.15) 60%, transparent 80%);
-      border-radius: 50%;
-      filter: blur(8px);
-      animation: pulseGlow 3s ease-in-out infinite alternate;
-      pointer-events: none;
-    }
-    @keyframes pulseGlow {
-      from { transform: scale(0.9); opacity: 0.8; }
-      to { transform: scale(1.15); opacity: 1; }
-    }
-    .bulb-svg {
-      width: 60px;
-      height: 60px;
-      filter: drop-shadow(0 0 16px rgba(255, 235, 59, 0.9));
-      z-index: 2;
-    }
-    .bulb-tag {
-      margin-top: 8px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1.5px solid #fbc531;
-      padding: 6px 18px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 15px rgba(251, 197, 49, 0.25);
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* CONTAINER CHỨA CÁC NHÁNH */
-    .mindmap-wrapper {
-      position: relative;
+    #viewport {
       width: 100%;
-      max-width: 650px; /* Vừa khít tablet & mobile lớn, desktop tự căn giữa */
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding-left: 28px; /* Dành chỗ cho trục đường nối bên trái */
-    }
-
-    /* ĐƯỜNG DẪN SVG NỐI THÔNG MINH */
-    .tree-line-svg {
-      position: absolute;
-      top: -20px;
-      left: 10px;
-      width: 26px;
-      height: calc(100% + 10px);
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    /* CARD NHÁNH KIẾN THỨC */
-    .branch-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 12px;
-      padding: 14px 16px;
-      border: 1.2px solid transparent;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      height: 100%;
       position: relative;
-      z-index: 2;
-      transform: translateY(20px);
-      opacity: 0;
-      animation: cardAppear 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      touch-action: none;
+      cursor: grab;
     }
-    @keyframes cardAppear {
-      to { transform: translateY(0); opacity: 1; }
+    #viewport:active {
+      cursor: grabbing;
     }
-    .branch-card:hover {
-      transform: translateY(-2px);
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
     }
-
-    .branch-card.b1 { border-color: var(--c1); animation-delay: 0.15s; }
-    .branch-card.b2 { border-color: var(--c2); animation-delay: 0.3s; }
-    .branch-card.b3 { border-color: var(--c3); animation-delay: 0.45s; }
-    .branch-card.b4 { border-color: var(--c4); animation-delay: 0.6s; }
-
-    .card-title {
-      font-size: 13.5px;
-      font-weight: 700;
-      margin-bottom: 10px;
+    .toolbar {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-    .b1 .card-title { color: var(--c1); }
-    .b2 .card-title { color: var(--c2); }
-    .b3 .card-title { color: var(--c3); }
-    .b4 .card-title { color: var(--c4); }
-
-    .card-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-    .card-list li {
-      font-size: 11.8px;
-      line-height: 1.5;
-      color: #e2e8f0;
-      position: relative;
-      padding-left: 14px;
-      word-break: break-word;
-    }
-    .card-list li::before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      font-size: 14px;
-      line-height: 1;
-    }
-    .b1 li::before { color: var(--c1); }
-    .b2 li::before { color: var(--c2); }
-    .b3 li::before { color: var(--c3); }
-    .b4 li::before { color: var(--c4); }
-
-    /* NÚT ĐIỀU KHIỂN NỔI */
-    .fab-replay {
-      position: fixed;
-      bottom: 16px;
-      right: 16px;
-      background: linear-gradient(135deg, #fbc531, #e1b12c);
-      color: #0b0f19;
-      border: none;
-      padding: 8px 16px;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 7px 16px;
       border-radius: 30px;
-      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      z-index: 10;
+      max-width: 95vw;
+      overflow-x: auto;
+    }
+    .btn {
+      background: #fbc531;
+      border: none;
+      color: #0b0f19;
+      padding: 6px 13px;
+      border-radius: 20px;
       font-weight: 700;
+      font-size: 11px;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
-      cursor: pointer;
-      z-index: 100;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
     }
-
-    /* MÀN HÌNH MÁY TÍNH / IPAD XOAY NGANG (>= 900px) */
-    @media (min-width: 900px) {
-      .mindmap-wrapper {
-        max-width: 1000px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        padding-left: 0;
-      }
-      .tree-line-svg { display: none; }
-      .bulb-section { margin-bottom: 32px; }
-      .card-list li { font-size: 12.5px; }
+    .btn:active {
+      transform: scale(0.95);
+    }
+    .btn.record {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+    }
+    .btn.record.recording {
+      animation: pulseBtn 1s infinite alternate;
+    }
+    @keyframes pulseBtn {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(1.05); opacity: 0.8; }
+    }
+    .hint {
+      font-size: 10.5px;
+      color: #94a3b8;
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
 
-  <!-- BÓNG ĐÈN TRUNG TÂM -->
-  <div class="bulb-section">
-    <div class="bulb-glow"></div>
-    <svg class="bulb-svg" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" fill="#fffa65"/>
-      <path d="M9 19c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-.5H9V19zm2 2h2c0 .55-.45 1-1 1s-1-.45-1-1z" fill="#94a3b8"/>
-      <path d="M10 9l2-3 2 3" stroke="#f59e0b" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <div class="bulb-tag">💡 TOÁN 6: SỐ TỰ NHIÊN</div>
+  <div id="viewport">
+    <canvas id="mindmapCanvas"></canvas>
   </div>
 
-  <!-- CONTAINER CHỨA CÁC NHÁNH -->
-  <div class="mindmap-wrapper" id="mindmapWrapper">
-    <!-- SVG đường line kết nối dọc theo trục -->
-    <svg class="tree-line-svg" preserveAspectRatio="none">
-      <line x1="12" y1="0" x2="12" y2="100%" stroke="rgba(251, 197, 49, 0.45)" stroke-width="2.5" stroke-dasharray="4 3"/>
-    </svg>
-
-    <!-- NHÁNH 1 -->
-    <div class="branch-card b1">
-      <div class="card-title">Nhánh 1: TẬP HỢP</div>
-      <ul class="card-list">
-        <li>Khái niệm: Đối tượng thuộc tập hợp là phần tử; kí hiệu: x ∈ A, y ∉ A</li>
-        <li>Mô tả: Liệt kê {a; b; c} (mỗi phần tử 1 lần) & Nêu dấu hiệu đặc trưng</li>
-        <li>Tập hợp số: N = {0; 1; 2; 3;...}, N* = {1; 2; 3;...} (tập vô hạn)</li>
-        <li>Ghi số hệ thập phân: 10 chữ số (0-9); ab = a.10+b; abc = a.100+b.10+c</li>
-        <li>Số La Mã (1-30): I=1, V=5, X=10, IV=4, IX=9, ghép X/XX bên trái</li>
-        <li>Thứ tự: Tia số (trái &lt; phải), số liền trước/sau; bắc cầu; kí hiệu ≤, ≥</li>
-      </ul>
-    </div>
-
-    <!-- NHÁNH 2 -->
-    <div class="branch-card b2">
-      <div class="card-title">Nhánh 2: CÁC PHÉP TÍNH TRONG N</div>
-      <ul class="card-list">
-        <li>Phép cộng: a+b=c (Giao hoán a+b=b+a; Kết hợp (a+b)+c=a+(b+c); a+0=a)</li>
-        <li>Phép trừ: a-b=c (Điều kiện thực hiện trong N: a ≥ b)</li>
-        <li>Phép nhân: a.b=c (Giao hoán; Kết hợp; Phân phối a(b+c)=ab+ac; a.0=0)</li>
-        <li>Phép chia: a = b.q + r (0 ≤ r &lt; b). Chia hết khi r=0; Chia có dư r ≠ 0</li>
-        <li>Lũy thừa: a^n = a.a...a (n thừa số a); a^1 = a, a^0 = 1 (a ≠ 0)</li>
-        <li>Nhân/Chia cùng cơ số: a^m . a^n = a^(m+n) ; a^m : a^n = a^(m-n)</li>
-        <li>Thứ tự tính: Không ngoặc: Lũy thừa → Nhân/Chia → Cộng/Trừ</li>
-        <li>Dấu ngoặc: Thực hiện trong ngoặc trước theo thứ tự ( ) → [ ] → { }</li>
-      </ul>
-    </div>
-
-    <!-- NHÁNH 3 -->
-    <div class="branch-card b3">
-      <div class="card-title">Nhánh 3: TÍNH CHẤT CHIA HẾT TRONG N</div>
-      <ul class="card-list">
-        <li>Quan hệ chia hết: a = k.b ⇒ a ⋮ b (b ≠ 0). Không chia hết kí hiệu a ⋮̸ b</li>
-        <li>Ước và Bội: a ⋮ b ⇒ b là ước của a (Ư(a)), a là bội của b (B(b))</li>
-        <li>Cách tìm: Chia a từ 1 đến a để tìm Ư; Nhân b với 0, 1, 2, 3... để tìm B</li>
-        <li>Chia hết 1 tổng: Tất cả số hạng ⋮ m ⇒ Tổng/Hiệu ⋮ m</li>
-        <li>Không chia hết: Có đúng 1 số hạng ⋮̸ m, các số khác ⋮ m ⇒ Tổng ⋮̸ m</li>
-        <li>Chia hết cho 2 và 5: Tận cùng chẵn (chia hết 2); tận cùng 0 hoặc 5 (chia hết 5)</li>
-        <li>Chia hết cho 9 và 3: Tổng chữ số chia hết cho 9 (⋮ 9); tổng chia hết cho 3 (⋮ 3)</li>
-      </ul>
-    </div>
-
-    <!-- NHÁNH 4 -->
-    <div class="branch-card b4">
-      <div class="card-title">Nhánh 4: SỐ NGUYÊN TỐ - ƯỚC & BỘI CHUNG</div>
-      <ul class="card-list">
-        <li>Định nghĩa: Số nguyên tố chỉ có 2 ước; Hợp số &gt; 2 ước (0 và 1 không là SNT, hợp số)</li>
-        <li>Phân tích ra TSNT: Biểu diễn hợp số thành tích các SNT (Sơ đồ cây / Sơ đồ cột)</li>
-        <li>ƯCLN: Số lớn nhất trong tập ước chung. Lấy TSNT chung với số mũ nhỏ nhất</li>
-        <li>BCNN: Số nhỏ nhất khác 0 trong tập bội chung. Lấy TSNT chung &amp; riêng mũ lớn nhất</li>
-        <li>Trường hợp đặc biệt: Nếu a ⋮ b thì ƯCLN(a,b) = b; BCNN(a,b) = a</li>
-        <li>Số nguyên tố cùng nhau: Hai số có ƯCLN = 1. Rút gọn phân số chia cho ƯCLN</li>
-        <li>Quy đồng mẫu phân số: Mẫu số chung chính là BCNN của các mẫu số</li>
-      </ul>
-    </div>
+  <div class="toolbar">
+    <button class="btn" onclick="zoomIn()">➕ Phóng to</button>
+    <button class="btn" onclick="zoomOut()">➖ Thu nhỏ</button>
+    <button class="btn" onclick="resetView()">🎯 Về giữa</button>
+    <button class="btn" onclick="replayAnimation()">🔄 Phát lại</button>
+    <button class="btn record" id="recBtn" onclick="exportVideo()">🎥 Xuất Video MP4</button>
+    <span class="hint">💡 Lăn chuột / chụm tay để zoom</span>
   </div>
-
-  <button class="fab-replay" onclick="replay()">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-    Phát lại hiệu ứng
-  </button>
 
   <script>
-    function replay() {
-      const cards = document.querySelectorAll('.branch-card');
-      cards.forEach(c => {
-        c.style.animation = 'none';
-        c.offsetHeight; // Kích hoạt reflow
-        c.style.animation = '';
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    const canvas = document.getElementById('mindmapCanvas');
+    const ctx = canvas.getContext('2d');
+    const recBtn = document.getElementById('recBtn');
+
+    let width, height, dpr;
+    let camera = { x: 0, y: 0, zoom: 1 };
+    let isDragging = false;
+    let dragStart = { x: 0, y: 0 };
+    let initialPinchDist = null;
+    let initialZoom = 1;
+
+    // Dữ liệu sơ đồ tư duy chuẩn phân cấp 4 nhánh
+    const treeData = [
+      {
+        id: 1, side: 'left',
+        title: "Nhánh 1: TẬP HỢP",
+        color: "#38bdf8",
+        subItems: [
+          "Khái niệm: Tập hợp & phần tử (x ∈ A, y ∉ A)",
+          "2 cách viết: Liệt kê {a;b} & Chỉ dấu hiệu",
+          "Tập hợp số: N = {0;1;2;...} & N* = {1;2;3;...}",
+          "Hệ thập phân: 10 chữ số (0-9); ab=a.10+b",
+          "Số La Mã (1-30): I, V, X, IV, IX ghép số",
+          "Thứ tự: Tia số (trái < phải), số liền trước/sau"
+        ]
+      },
+      {
+        id: 2, side: 'right',
+        title: "Nhánh 2: PHÉP TÍNH TRONG N",
+        color: "#34d399",
+        subItems: [
+          "Cộng/Trừ: a+b=c (Giao hoán, Kết hợp); a-b (a ≥ b)",
+          "Nhân/Chia: a.b=c; Phép chia a = b.q + r (r < b)",
+          "Phân phối: a.(b + c) = a.b + a.c",
+          "Lũy thừa: a^n = a.a...a ; a^1=a ; a^0=1 (a≠0)",
+          "Cùng cơ số: a^m . a^n = a^(m+n) ; a^m : a^n = a^(m-n)",
+          "Thứ tự tính: Lũy thừa → Nhân/Chia → Cộng/Trừ",
+          "Dấu ngoặc: ( ) → [ ] → { }"
+        ]
+      },
+      {
+        id: 3, side: 'left',
+        title: "Nhánh 3: TÍNH CHIA HẾT",
+        color: "#fbbf24",
+        subItems: [
+          "Quan hệ chia hết: a = k.b ⇒ a ⋮ b (b ≠ 0)",
+          "Ước và Bội: b là ước (Ư(a)), a là bội (B(b))",
+          "Chia hết 1 tổng: Tất cả số hạng ⋮ m ⇒ Tổng ⋮ m",
+          "Không chia hết: Có đúng 1 số hạng ⋮̸ m ⇒ Tổng ⋮̸ m",
+          "Chia hết 2 & 5: Tận cùng chẵn; tận cùng 0 hoặc 5",
+          "Chia hết 9 & 3: Tổng chữ số chia hết cho 9 / 3"
+        ]
+      },
+      {
+        id: 4, side: 'right',
+        title: "Nhánh 4: SỐ NGUYÊN TỐ - ƯCLN & BCNN",
+        color: "#f87171",
+        subItems: [
+          "Số nguyên tố (chỉ có 2 ước); Hợp số (> 2 ước)",
+          "Phân tích ra TSNT: Theo sơ đồ cây hoặc sơ đồ cột",
+          "ƯCLN: TSNT chung lấy số mũ nhỏ nhất",
+          "BCNN: TSNT chung & riêng lấy số mũ lớn nhất",
+          "Số nguyên tố cùng nhau: Hai số có ƯCLN = 1",
+          "Ứng dụng: Rút gọn phân số & Quy đồng mẫu số"
+        ]
+      }
+    ];
+
+    let animProgress = 0;
+    let isRecording = false;
+
+    function resize() {
+      dpr = window.devicePixelRatio || 1;
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+
+      // Tự động căn chỉnh mức zoom ban đầu vừa khít màn hình
+      if (width < 768) {
+        camera.zoom = Math.min((width - 20) / 1050, 0.65);
+      } else if (width < 1100) {
+        camera.zoom = Math.min((width - 40) / 1250, 0.85);
+      } else {
+        camera.zoom = 1;
+      }
+      camera.x = 0;
+      camera.y = 0;
     }
+    window.addEventListener('resize', resize);
+
+    // Tính toán tọa độ phân cấp hình cành cây chuẩn sơ đồ tư duy
+    function getBranchCoordinates(branch, indexInSide) {
+      const isLeft = branch.side === 'left';
+      const dir = isLeft ? -1 : 1;
+
+      // Nhánh chính cấp 1
+      const mainX = dir * 250;
+      const mainY = (indexInSide === 0) ? -130 : 150;
+
+      // Các nhánh con cấp 2
+      const subTotal = branch.subItems.length;
+      const subStepY = 28;
+      const subStartX = mainX + dir * 80;
+      const subStartY = mainY - ((subTotal - 1) * subStepY) / 2;
+
+      const subs = branch.subItems.map((text, i) => {
+        return {
+          text: text,
+          x: subStartX + dir * 180,
+          y: subStartY + i * subStepY
+        };
+      });
+
+      return { mainX, mainY, dir, subs };
+    }
+
+    // Vẽ bóng đèn trung tâm
+    function drawCenterBulb(bx, by, time) {
+      const pulse = Math.sin(time * 0.004) * 6;
+
+      const glowGrad = ctx.createRadialGradient(bx, by - 14, 10, bx, by - 14, 65 + pulse);
+      glowGrad.addColorStop(0, 'rgba(255, 230, 100, 0.95)');
+      glowGrad.addColorStop(0.35, 'rgba(255, 195, 45, 0.35)');
+      glowGrad.addColorStop(0.8, 'rgba(255, 160, 10, 0.06)');
+      glowGrad.addColorStop(1, 'rgba(255, 160, 10, 0)');
+
+      ctx.fillStyle = glowGrad;
+      ctx.beginPath();
+      ctx.arc(bx, by - 14, 65 + pulse, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Thân đèn
+      ctx.save();
+      ctx.shadowColor = '#fbc531';
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.arc(bx, by - 14, 23, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff969';
+      ctx.fill();
+      ctx.strokeStyle = '#fbc531';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Dây tóc
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(bx - 7, by - 12);
+      ctx.lineTo(bx, by - 22);
+      ctx.lineTo(bx + 7, by - 12);
+      ctx.stroke();
+
+      // Đui đèn
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.roundRect(bx - 10, by + 8, 20, 10, [0, 0, 4, 4]);
+      ctx.fill();
+      ctx.restore();
+
+      // Nhãn trung tâm
+      const title = "💡 TOÁN 6: SỐ TỰ NHIÊN";
+      ctx.font = "bold 12.5px 'Segoe UI', sans-serif";
+      const tw = ctx.measureText(title).width;
+      const bw = tw + 28;
+      const bh = 30;
+
+      ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
+      ctx.strokeStyle = "#fbc531";
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.roundRect(bx - bw / 2, by + 26, bw, bh, 15);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(title, bx, by + 41);
+    }
+
+    // Vẽ cành cây uốn lượn nối trực tiếp vào từng thẻ con
+    function drawBranch(branch, indexInSide, t) {
+      if (t <= 0) return;
+
+      const coords = getBranchCoordinates(branch, indexInSide);
+      const ease = 1 - Math.pow(1 - t, 3);
+
+      const rootX = 0;
+      const rootY = 30;
+
+      const mainCurrX = rootX + (coords.mainX - rootX) * ease;
+      const mainCurrY = rootY + (coords.mainY - rootY) * ease;
+
+      // 1. Cành chính nối từ bóng đèn ra nhánh cấp 1
+      ctx.save();
+      const gradMain = ctx.createLinearGradient(rootX, rootY, mainCurrX, mainCurrY);
+      gradMain.addColorStop(0, '#fbc531');
+      gradMain.addColorStop(1, branch.color);
+
+      ctx.strokeStyle = gradMain;
+      ctx.lineWidth = 3.2;
+      ctx.beginPath();
+      ctx.moveTo(rootX, rootY);
+      ctx.bezierCurveTo(
+        rootX + coords.dir * 80, rootY,
+        mainCurrX - coords.dir * 60, mainCurrY,
+        mainCurrX, mainCurrY
+      );
+      ctx.stroke();
+      ctx.restore();
+
+      // Hộp nhánh cấp 1
+      ctx.save();
+      ctx.font = "bold 12.5px 'Segoe UI', sans-serif";
+      const titleW = ctx.measureText(branch.title).width + 24;
+      const titleH = 28;
+      const bx = mainCurrX - (coords.dir > 0 ? 0 : titleW);
+      const by = mainCurrY - titleH / 2;
+
+      ctx.fillStyle = "rgba(15, 23, 42, 0.94)";
+      ctx.strokeStyle = branch.color;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.roundRect(bx, by, titleW, titleH, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = branch.color;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(branch.title, bx + 12, mainCurrY);
+      ctx.restore();
+
+      // 2. Tẽ cành con nối TRỰC TIẾP từ mép nhánh chính vào từng thẻ con
+      const mainEdgeX = coords.dir > 0 ? (bx + titleW) : bx;
+
+      coords.subs.forEach((sub, si) => {
+        const subThreshold = 0.2 + si * 0.1;
+        if (ease >= subThreshold) {
+          const subEase = Math.min(1, (ease - subThreshold) / 0.15);
+          const subCurrX = mainEdgeX + (sub.x - mainEdgeX) * subEase;
+          const subCurrY = mainCurrY + (sub.y - mainCurrY) * subEase;
+
+          // Dây nối nét đứt uốn cong cắm thẳng vào mép thẻ con
+          ctx.save();
+          ctx.strokeStyle = branch.color;
+          ctx.lineWidth = 1.4;
+          ctx.setLineDash([4, 3]);
+          ctx.beginPath();
+          ctx.moveTo(mainEdgeX, mainCurrY);
+          ctx.bezierCurveTo(
+            mainEdgeX + coords.dir * 40, mainCurrY,
+            subCurrX - coords.dir * 40, subCurrY,
+            subCurrX, subCurrY
+          );
+          ctx.stroke();
+          ctx.restore();
+
+          // Thẻ con (Hộp bo góc ôm trọn chữ)
+          ctx.save();
+          ctx.font = "11px 'Segoe UI', sans-serif";
+          const subW = ctx.measureText(sub.text).width + 16;
+          const subH = 21;
+          const sx = coords.dir > 0 ? subCurrX : (subCurrX - subW);
+          const sy = subCurrY - subH / 2;
+
+          ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
+          ctx.strokeStyle = branch.color;
+          ctx.lineWidth = 1.0;
+          ctx.beginPath();
+          ctx.roundRect(sx, sy, subW, subH, 4);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = "#e2e8f0";
+          ctx.textAlign = "left";
+          ctx.textBaseline = "middle";
+          ctx.fillText(sub.text, sx + 8, subCurrY);
+          ctx.restore();
+        }
+      });
+    }
+
+    function render(time) {
+      if (animProgress < 1) {
+        animProgress += 0.012;
+        if (animProgress > 1) animProgress = 1;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.save();
+      // Áp dụng Pan & Zoom
+      ctx.translate(width / 2 + camera.x, height / 2 + camera.y);
+      ctx.scale(camera.zoom, camera.zoom);
+
+      // Phân bổ 2 nhánh bên trái, 2 nhánh bên phải[cite: 5, 6]
+      const leftBranches = treeData.filter(b => b.side === 'left');
+      const rightBranches = treeData.filter(b => b.side === 'right');
+
+      leftBranches.forEach((b, i) => drawBranch(b, i, animProgress));
+      rightBranches.forEach((b, i) => drawBranch(b, i, animProgress));
+
+      drawCenterBulb(0, 0, time);
+
+      ctx.restore();
+
+      requestAnimationFrame(render);
+    }
+
+    // ==== ĐIỀU KHIỂN ZOOM / PAN ====
+    function zoomIn() {
+      camera.zoom = Math.min(camera.zoom * 1.2, 2.5);
+    }
+    function zoomOut() {
+      camera.zoom = Math.max(camera.zoom / 1.2, 0.35);
+    }
+    function resetView() {
+      resize();
+    }
+    function replayAnimation() {
+      animProgress = 0;
+    }
+
+    const vp = document.getElementById('viewport');
+
+    vp.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      dragStart = { x: e.clientX - camera.x, y: e.clientY - camera.y };
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      camera.x = e.clientX - dragStart.x;
+      camera.y = e.clientY - dragStart.y;
+    });
+
+    window.addEventListener('mouseup', () => isDragging = false);
+
+    vp.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      camera.zoom = Math.min(Math.max(camera.zoom * zoomFactor, 0.3), 2.5);
+    }, { passive: false });
+
+    vp.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        dragStart = { x: e.touches[0].clientX - camera.x, y: e.touches[0].clientY - camera.y };
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        initialPinchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        initialZoom = camera.zoom;
+      }
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        camera.x = e.touches[0].clientX - dragStart.x;
+        camera.y = e.touches[0].clientY - dragStart.y;
+      } else if (e.touches.length === 2 && initialPinchDist) {
+        const dist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        camera.zoom = Math.min(Math.max(initialZoom * (dist / initialPinchDist), 0.3), 2.5);
+      }
+    });
+
+    window.addEventListener('touchend', () => {
+      isDragging = false;
+      initialPinchDist = null;
+    });
+
+    // ==== TÍNH NĂNG XUẤT VIDEO MP4 CHẤT LƯỢNG CAO ====
+    async function exportVideo() {
+      if (isRecording) return;
+      isRecording = true;
+      recBtn.classList.add('recording');
+      recBtn.innerHTML = "⏳ Đang quay video...";
+
+      // Đưa camera về chuẩn và chạy lại animation từ đầu
+      resetView();
+      animProgress = 0;
+
+      const stream = canvas.captureStream(60); // 60 FPS
+      let mimeType = 'video/mp4';
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = 'video/webm;codecs=h264';
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = 'video/webm';
+        }
+      }
+
+      const recorder = new MediaRecorder(stream, {
+        mimeType: mimeType,
+        videoBitsPerSecond: 6000000 // 6 Mbps
+      });
+
+      const chunks = [];
+      recorder.ondataavailable = e => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'so_do_tu_duy_toan6.mp4';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        recBtn.classList.remove('recording');
+        recBtn.innerHTML = "🎥 Xuất Video MP4";
+        isRecording = false;
+      };
+
+      recorder.start();
+
+      // Quay trong 4.5 giây (đủ để hiệu ứng mở bung hoàn thiện và người xem đọc được)
+      setTimeout(() => {
+        recorder.stop();
+      }, 4500);
+    }
+
+    resize();
+    requestAnimationFrame(render);
   </script>
 </body>
 </html>

@@ -1,520 +1,909 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="h-full">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sơ Đồ Tư Duy Toán 6 - Chương 1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Trắc Nghiệm Địa Lí 6 - Kinh Vĩ Tuyến & Tỉ Lệ Bản Đồ</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Google Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
+    @keyframes pulseTarget {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.75; }
     }
-    body {
-      background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
-      color: #fff;
-      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-      overflow: hidden;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    .marker-active {
+      animation: pulseTarget 1.4s infinite ease-in-out;
+      transform-origin: center;
     }
-    #viewport {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      touch-action: none;
-      cursor: grab;
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    #viewport:active {
-      cursor: grabbing;
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
     }
-    canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-    .toolbar {
-      position: absolute;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      padding: 7px 16px;
-      border-radius: 30px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-      z-index: 10;
-      max-width: 95vw;
-      overflow-x: auto;
-    }
-    .btn {
-      background: #fbc531;
-      border: none;
-      color: #0b0f19;
-      padding: 6px 13px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 11px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-    .btn:active {
-      transform: scale(0.95);
-    }
-    .btn.record {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #fff;
-    }
-    .btn.record.recording {
-      animation: pulseBtn 1s infinite alternate;
-    }
-    @keyframes pulseBtn {
-      from { transform: scale(1); opacity: 1; }
-      to { transform: scale(1.05); opacity: 0.8; }
-    }
-    .hint {
-      font-size: 10.5px;
-      color: #94a3b8;
-      white-space: nowrap;
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
     }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-full flex flex-col antialiased selection:bg-blue-200">
 
-  <div id="viewport">
-    <canvas id="mindmapCanvas"></canvas>
+  <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3.5 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600/60 border border-blue-400/40 flex items-center justify-center shadow-inner text-xl">
+          🌍
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            Địa Lí 6: Hệ Thống Tọa Độ & Bản Đồ
+            <span class="text-[11px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full">Trắc Nghiệm</span>
+          </h1>
+          <p class="text-xs text-blue-200/80">Kinh vĩ tuyến • Lưới tọa độ • Ngày đêm • Tỉ lệ bản đồ</p>
+        </div>
+      </div>
+
+      <div class="flex items-center flex-wrap gap-2">
+        <div class="bg-white/10 backdrop-blur-md p-1 rounded-xl border border-white/10 flex items-center text-xs">
+          <button id="mode-random-btn" onclick="setMode('random_each')" 
+            class="px-3 py-1.5 rounded-lg font-medium transition-all shadow-sm bg-white text-blue-900">
+            🎲 Rút 1 câu/phần (4 câu)
+          </button>
+          <button id="mode-all-btn" onclick="setMode('all')" 
+            class="px-3 py-1.5 rounded-lg font-medium transition-all text-white/90 hover:text-white">
+            📚 Toàn bộ đề (22 câu)
+          </button>
+        </div>
+
+        <!-- Nút đổi đề: Được khóa cho đến khi nộp bài xong -->
+        <button id="btn-new-quiz" onclick="handleNewQuizClick()" 
+          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold text-xs shadow-md transition-all opacity-50 cursor-not-allowed">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span id="btn-new-quiz-text">🔒 Làm xong mới đổi</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 flex-1 flex flex-col gap-6">
+
+    <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span id="badge-mode" class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-100 text-blue-800">
+            Chế độ: Rút ngẫu nhiên 1 câu mỗi phần
+          </span>
+          <span class="text-xs text-slate-500">Tự động xáo trộn câu & thứ tự đáp án</span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-600">
+          Hãy chọn đáp án đúng nhất cho từng câu. Sau khi nhấn <strong>"Nộp Bài & Chấm Điểm"</strong>, hệ thống sẽ mở khóa để bạn chuyển sang đề mới.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-4 bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl self-start md:self-auto min-w-[200px]">
+        <div class="flex-1">
+          <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+            <span>Tiến độ đã chọn</span>
+            <span id="progress-text">0 / 4</span>
+          </div>
+          <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+            <div id="progress-bar" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="quiz-container" class="space-y-6"></div>
+
+    <div id="quiz-action-bar" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-3 sticky bottom-4 z-30">
+      <div class="text-xs sm:text-sm text-slate-600 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+        <span id="submit-hint">Chọn đầy đủ đáp án trước khi hoàn thành bài nộp.</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="resetAnswers()" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-medium text-xs sm:text-sm transition">
+          Làm lại từ đầu
+        </button>
+        <button id="btn-submit" onclick="submitExam()" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center gap-2">
+          <span>✓ Nộp Bài & Chấm Điểm</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Kết Quả -->
+    <div id="result-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 transform transition-all animate-in fade-in zoom-in duration-200">
+        <div class="text-center space-y-3">
+          <div id="result-badge-icon" class="w-16 h-16 mx-auto rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl shadow-inner">
+            🏆
+          </div>
+          <h2 id="result-title" class="text-2xl font-extrabold text-slate-900">Kết Quả Bài Làm</h2>
+          <p id="result-subtitle" class="text-sm text-slate-500">Đã hoàn thành bài kiểm tra trắc nghiệm Địa lí</p>
+        </div>
+
+        <div class="my-6 grid grid-cols-3 gap-3 text-center">
+          <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
+            <span class="block text-xs font-medium text-slate-500">Điểm số</span>
+            <span id="res-score" class="text-2xl font-black text-blue-600">10.0</span>
+          </div>
+          <div class="p-3.5 bg-emerald-50/70 rounded-2xl border border-emerald-100">
+            <span class="block text-xs font-medium text-emerald-600">Số câu đúng</span>
+            <span id="res-correct" class="text-2xl font-black text-emerald-600">4/4</span>
+          </div>
+          <div class="p-3.5 bg-indigo-50/70 rounded-2xl border border-indigo-100">
+            <span class="block text-xs font-medium text-indigo-600">Tỉ lệ đúng</span>
+            <span id="res-percent" class="text-2xl font-black text-indigo-600">100%</span>
+          </div>
+        </div>
+
+        <p id="res-evaluation" class="text-sm text-center font-medium text-slate-700 bg-slate-100/70 p-3 rounded-xl mb-6"></p>
+
+        <div class="flex gap-2.5">
+          <button onclick="closeResultModal()" class="flex-1 py-3 rounded-xl border border-slate-300 font-semibold text-slate-700 hover:bg-slate-100 text-sm transition">
+            Xem lời giải chi tiết
+          </button>
+          <button onclick="closeResultModal(); generateQuiz();" class="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 font-bold text-white text-sm shadow transition">
+            Làm đề mới ➔
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2">
+    <span id="toast-icon">ℹ️</span>
+    <span id="toast-msg">Thông báo</span>
   </div>
 
-  <div class="toolbar">
-    <button class="btn" onclick="zoomIn()">➕ Phóng to</button>
-    <button class="btn" onclick="zoomOut()">➖ Thu nhỏ</button>
-    <button class="btn" onclick="resetView()">🎯 Về giữa</button>
-    <button class="btn" onclick="replayAnimation()">🔄 Phát lại</button>
-    <button class="btn record" id="recBtn" onclick="exportVideo()">🎥 Xuất Video MP4</button>
-    <span class="hint">💡 Lăn chuột / chụm tay để zoom</span>
-  </div>
+  <footer class="mt-auto border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500">
+    Hệ Thống Trắc Nghiệm Tự Động • Địa Lí 6
+  </footer>
 
   <script>
-    const canvas = document.getElementById('mindmapCanvas');
-    const ctx = canvas.getContext('2d');
-    const recBtn = document.getElementById('recBtn');
+    const QUESTION_BANK = {
+      // Phần II: Trắc nghiệm lựa chọn đúng sai
+      part2: [
+        {
+          id: "p2_a",
+          part: "Phần II: Đúng / Sai",
+          title: "Khái niệm Kinh tuyến",
+          passage: "Trên quả Địa Cầu có hệ thống kinh tuyến và vĩ tuyến được sử dụng để xác định vị trí của các địa điểm trên bề mặt Trái Đất...",
+          content: "Kinh tuyến là nửa đường tròn nối hai cực trên bề mặt quả Địa Cầu.",
+          isCorrect: true,
+          explain: "Đúng theo định nghĩa SGK: Kinh tuyến là những nửa đường tròn nối liền hai cực trên bề mặt quả Địa Cầu."
+        },
+        {
+          id: "p2_b",
+          part: "Phần II: Đúng / Sai",
+          title: "Khái niệm Vĩ tuyến & góc với kinh tuyến",
+          passage: "Vĩ tuyến là những vòng tròn bao quanh quả Địa cầu...",
+          content: "Vĩ tuyến là những vòng tròn bao quanh quả Địa cầu và không vuông góc với các kinh tuyến.",
+          isCorrect: false,
+          explain: "Sai. Vĩ tuyến là những vòng tròn vuông góc với các kinh tuyến và song song với Xích đạo."
+        },
+        {
+          id: "p2_c",
+          part: "Phần II: Đúng / Sai",
+          title: "Kinh tuyến gốc (0°)",
+          passage: "Kinh tuyến gốc đi qua đài thiên văn Grin-uých...",
+          content: "Kinh tuyến gốc là đường đi qua đài thiên văn Grin-uých ở ngoại ô Luân Đôn - thủ đô nước Anh và được quy ước là 0°.",
+          isCorrect: true,
+          explain: "Đúng. Kinh tuyến gốc quy ước là 0°, đi qua đài thiên văn Greenwich (Luân Đôn, Anh)."
+        },
+        {
+          id: "p2_d",
+          part: "Phần II: Đúng / Sai",
+          title: "Vĩ tuyến gốc (0°)",
+          passage: "Xích đạo là vĩ tuyến lớn nhất...",
+          content: "Vĩ tuyến gốc là vĩ tuyến 0° (đường Xích đạo).",
+          isCorrect: true,
+          explain: "Đúng. Vĩ tuyến gốc có số độ là 0°, chính là đường Xích đạo."
+        },
+        {
+          id: "p2_e",
+          part: "Phần II: Đúng / Sai",
+          title: "Đặc điểm Kinh tuyến",
+          passage: "Kinh tuyến là nửa đường tròn...",
+          content: "Mọi kinh tuyến đều là nửa đường tròn nối hai cực trên bề mặt quả Địa Cầu.",
+          isCorrect: true,
+          explain: "Đúng. Tất cả các kinh tuyến đều nối liền cực Bắc và cực Nam."
+        },
+        {
+          id: "p2_f",
+          part: "Phần II: Đúng / Sai",
+          title: "Đặc điểm Vĩ tuyến",
+          passage: "Vĩ tuyến là những vòng tròn vuông góc với các kinh tuyến...",
+          content: "Vĩ tuyến là những vòng tròn bao quanh quả Địa Cầu, vuông góc với các kinh tuyến và song song với Xích đạo.",
+          isCorrect: true,
+          explain: "Đúng hoàn toàn với đặc điểm hình học của hệ thống vĩ tuyến."
+        },
+        {
+          id: "p2_g",
+          part: "Phần II: Đúng / Sai",
+          title: "Phạm vi Bán cầu Bắc",
+          passage: "Bán cầu Bắc là nửa cầu tính từ đường Xích đạo...",
+          content: "Bán cầu Bắc: là nửa cầu tính từ đường Xích đạo đến cực Tây.",
+          isCorrect: false,
+          explain: "Sai. Bán cầu Bắc là nửa cầu tính từ đường Xích đạo đến cực Bắc (không có cực Tây)."
+        },
+        {
+          id: "p2_h",
+          part: "Phần II: Đúng / Sai",
+          title: "Phạm vi Bán cầu Nam",
+          passage: "Bán cầu Nam là nửa cầu tính từ đường Xích đạo...",
+          content: "Bán cầu Nam: là nửa cầu tính từ đường Xích đạo đến cực Nam.",
+          isCorrect: true,
+          explain: "Đúng. Nửa cầu tính từ Xích đạo đến cực Nam là bán cầu Nam."
+        },
+        {
+          id: "p2_i",
+          part: "Phần II: Đúng / Sai",
+          title: "Độ dài các kinh tuyến",
+          passage: "Kinh tuyến nối hai cực...",
+          content: "Các kinh tuyến đều có độ dài bằng nhau.",
+          isCorrect: true,
+          explain: "Đúng. Vì đều là nửa đường tròn nối hai cực của hình cầu nên tất cả các kinh tuyến đều có độ dài bằng nhau."
+        },
+        {
+          id: "p2_k",
+          part: "Phần II: Đúng / Sai",
+          title: "Độ dài các vĩ tuyến",
+          passage: "Vĩ tuyến là các vòng tròn song song...",
+          content: "Các vĩ tuyến có độ dài bằng nhau và đều song song với Xích đạo.",
+          isCorrect: false,
+          explain: "Sai. Các vĩ tuyến song song với Xích đạo nhưng độ dài khác nhau: dài nhất ở Xích đạo và thu nhỏ dần về hai cực."
+        }
+      ],
 
-    let width, height, dpr;
-    let camera = { x: 0, y: 0, zoom: 1 };
-    let isDragging = false;
-    let dragStart = { x: 0, y: 0 };
-    let initialPinchDist = null;
-    let initialZoom = 1;
+      // Phần III: Tọa độ địa lí các điểm A, B, C, D, E, F
+      part3: [
+        {
+          id: "p3_A",
+          part: "Phần III: Tọa độ địa lí",
+          targetPoint: "A",
+          title: "Xác định tọa độ địa lí điểm A",
+          content: "Dựa vào hình ảnh lưới kinh vĩ tuyến bên dưới, hãy xác định toạ độ địa lí của điểm A. *(Quy tắc: viết vĩ độ trước, kinh độ sau)*",
+          options: [
+            { text: "(0°, 10°T)", correct: true },
+            { text: "(10°T, 0°)", correct: false },
+            { text: "(10°B, 10°T)", correct: false },
+            { text: "(0°, 10°Đ)", correct: false }
+          ],
+          explain: "Điểm A nằm trên đường Xích đạo (0°) và kinh tuyến 10°T -> Tọa độ: (0°, 10°T)."
+        },
+        {
+          id: "p3_B",
+          part: "Phần III: Tọa độ địa lí",
+          targetPoint: "B",
+          title: "Xác định tọa độ địa lí điểm B",
+          content: "Dựa vào hình ảnh lưới kinh vĩ tuyến bên dưới, hãy xác định toạ độ địa lí của điểm B.",
+          options: [
+            { text: "(10°B, 20°Đ)", correct: true },
+            { text: "(20°Đ, 10°B)", correct: false },
+            { text: "(10°N, 20°Đ)", correct: false },
+            { text: "(20°B, 20°Đ)", correct: false }
+          ],
+          explain: "Điểm B nằm ở vĩ tuyến 10°B và kinh tuyến 20°Đ -> Tọa độ: (10°B, 20°Đ)."
+        },
+        {
+          id: "p3_C",
+          part: "Phần III: Tọa độ địa lí",
+          targetPoint: "C",
+          title: "Xác định tọa độ địa lí điểm C",
+          content: "Dựa vào hình ảnh lưới kinh vĩ tuyến bên dưới, hãy xác định toạ độ địa lí của điểm C.",
+          options: [
+            { text: "(40°N, 30°Đ)", correct: true },
+            { text: "(30°Đ, 40°N)", correct: false },
+            { text: "(40°B, 30°Đ)", correct: false },
+            { text: "(30°N, 40°Đ)", correct: false }
+          ],
+          explain: "Điểm C nằm ở vĩ tuyến 40°N và kinh tuyến 30°Đ -> Tọa độ: (40°N, 30°Đ)."
+        },
+        {
+          id: "p3_D",
+          part: "Phần III: Tọa độ địa lí",
+          targetPoint: "D",
+          title: "Xác định tọa độ địa lí điểm D",
+          content: "Dựa vào hình ảnh lưới kinh vĩ tuyến bên dưới, hãy xác định toạ độ địa lí của điểm D.",
+          options: [
+            { text: "(20°N, 10°Đ)", correct: true },
+            { text: "(10°Đ, 20°N)", correct: false },
+            { text: "(20°B, 10°Đ)", correct: false },
+            { text: "(30°N, 10°Đ)", correct: false }
+          ],
+          explain: "Điểm D nằm ở vĩ tuyến 20°N và kinh tuyến 10°Đ -> Tọa độ: (20°N, 10°Đ)."
+        },
+        {
+          id: "p3_E",
+          part: "Phần III: Tọa độ địa lí",
+          targetPoint: "E",
+          title: "Xác định tọa độ địa lí điểm E",
+          content: "Dựa vào hình ảnh lưới kinh vĩ tuyến bên dưới, hãy xác định toạ độ địa lí của điểm E.",
+          options: [
+            { text: "(50°N, 20°T)", correct: true },
+            { text: "(40°N, 20°T)", correct: false },
+            { text: "(20°T, 50°N)", correct: false },
+            { text: "(50°B, 20°T)", correct: false }
+          ],
+          explain: "Điểm E nằm ở vĩ tuyến 50°N và kinh tuyến 20°T -> Tọa độ: (50°N, 20°T)."
+        },
+        {
+          id: "p3_F",
+          part: "Phần III: Tọa độ địa lí",
+          targetPoint: "F",
+          title: "Xác định tọa độ địa lí điểm F",
+          content: "Dựa vào hình ảnh lưới kinh vĩ tuyến bên dưới, hãy xác định toạ độ địa lí của điểm F.",
+          options: [
+            { text: "(20°B, 20°T)", correct: true },
+            { text: "(20°T, 20°B)", correct: false },
+            { text: "(10°B, 20°T)", correct: false },
+            { text: "(20°N, 20°T)", correct: false }
+          ],
+          explain: "Điểm F nằm ở vĩ tuyến 20°B và kinh tuyến 20°T -> Tọa độ: (20°B, 20°T)."
+        }
+      ],
 
-    // Chỉ giữ lại 3 nhánh chính đã học
-    const treeData = [
-      {
-        id: 1, side: 'left', slot: 0,
-        title: "Nhánh 1: TẬP HỢP",
-        color: "#38bdf8",
-        subItems: [
-          "Khái niệm: Tập hợp & phần tử (x ∈ A, y ∉ A)",
-          "2 cách viết: Liệt kê {a;b} & Chỉ dấu hiệu",
-          "Tập hợp số: N = {0;1;2;...} & N* = {1;2;3;...}",
-          "Hệ thập phân: 10 chữ số (0-9); ab=a.10+b",
-          "Số La Mã (1-30): I, V, X, IV, IX ghép số",
-          "Thứ tự: Tia số (trái < phải), số liền trước/sau"
-        ]
-      },
-      {
-        id: 2, side: 'right', slot: 0,
-        title: "Nhánh 2: PHÉP TÍNH TRONG N",
-        color: "#34d399",
-        subItems: [
-          "Cộng/Trừ: a+b=c (Giao hoán, Kết hợp); a-b (a ≥ b)",
-          "Nhân/Chia: a.b=c; Phép chia a = b.q + r (r < b)",
-          "Phân phối: a.(b + c) = a.b + a.c",
-          "Lũy thừa: a^n = a.a...a ; a^1=a ; a^0=1 (a≠0)",
-          "Cùng cơ số: a^m . a^n = a^(m+n) ; a^m : a^n = a^(m-n)",
-          "Thứ tự tính: Lũy thừa → Nhân/Chia → Cộng/Trừ",
-          "Dấu ngoặc: ( ) → [ ] → { }"
-        ]
-      },
-      {
-        id: 3, side: 'right', slot: 1,
-        title: "Nhánh 3: TÍNH CHIA HẾT",
-        color: "#fbbf24",
-        subItems: [
-          "Quan hệ chia hết: a = k.b ⇒ a ⋮ b (b ≠ 0)",
-          "Ước và Bội: b là ước (Ư(a)), a là bội (B(b))",
-          "Chia hết 1 tổng: Tất cả số hạng ⋮ m ⇒ Tổng ⋮ m",
-          "Không chia hết: Có đúng 1 số hạng ⋮̸ m ⇒ Tổng ⋮̸ m",
-          "Chia hết 2 & 5: Tận cùng chẵn; tận cùng 0 hoặc 5",
-          "Chia hết 9 & 3: Tổng chữ số chia hết cho 9 / 3"
-        ]
+      // Phần IV - Câu 1: Hệ quả chuyển động Trái Đất
+      part4_1: [
+        {
+          id: "p4_1_a",
+          part: "Phần IV - Câu 1: Chuyển động Trái Đất",
+          title: "Hiện tượng ngày đêm luân phiên",
+          content: "Nguyên nhân chính dẫn đến hiện tượng ngày và đêm luân phiên nhau liên tục trên Trái Đất là gì?",
+          options: [
+            { text: "Do Trái Đất có dạng hình cầu và tự quay quanh trục từ Tây sang Đông", correct: true },
+            { text: "Do Trái Đất chuyển động tịnh tiến quanh Mặt Trời theo quỹ đạo elip", correct: false },
+            { text: "Do Mặt Trăng che khuất ánh sáng Mặt Trời theo chu kì 24 giờ", correct: false },
+            { text: "Do Mặt Trời tự quay quanh Trái Đất từ Đông sang Tây", correct: false }
+          ],
+          explain: "Trái Đất hình cầu nên luôn được chiếu sáng một nửa. Khi tự quay quanh trục từ Tây sang Đông, các địa điểm lần lượt được chiếu sáng rồi khuất bóng tạo ra hiện tượng ngày đêm luân phiên."
+        },
+        {
+          id: "p4_1_b",
+          part: "Phần IV - Câu 1: Chuyển động Trái Đất",
+          title: "Hiện tượng ngày đêm dài ngắn theo mùa",
+          content: "Nguyên nhân sinh ra hiện tượng ngày đêm dài ngắn theo mùa ở hai bán cầu Trái Đất là gì?",
+          options: [
+            { text: "Do trục Trái Đất nghiêng một góc 66°33' so với mặt phẳng quỹ đạo và không đổi phương khi chuyển động quanh Mặt Trời", correct: true },
+            { text: "Do khoảng cách từ Trái Đất đến Mặt Trời thay đổi liên tục giữa mùa đông và mùa hạ", correct: false },
+            { text: "Do vận tốc tự quay quanh trục của Trái Đất lúc nhanh lúc chậm theo tháng", correct: false },
+            { text: "Do ảnh hưởng của các dòng biển nóng và lạnh trên đại dương", correct: false }
+          ],
+          explain: "Trục Trái Đất nghiêng 66°33' và không đổi hướng khi quanh Mặt Trời khiến lần lượt hai bán cầu ngả về phía Mặt Trời sinh ra hiện tượng ngày đêm dài ngắn theo mùa."
+        }
+      ],
+
+      // Phần IV - Câu 2: Bài toán tỉ lệ bản đồ
+      part4_2: [
+        {
+          id: "p4_2_a",
+          part: "Phần IV - Câu 2: Bài toán tỉ lệ bản đồ",
+          title: "Tính khoảng cách thực tế (Tỉ lệ 1:600 000)",
+          content: "Dựa vào số ghi tỉ lệ của bản đồ sau đây: <strong>1 : 600 000</strong>, cho biết <strong>5 cm</strong> trên bản đồ ứng với bao nhiêu <strong>km</strong> trên thực địa?",
+          options: [
+            { text: "30 km", correct: true },
+            { text: "300 km", correct: false },
+            { text: "3 km", correct: false },
+            { text: "12 km", correct: false }
+          ],
+          explain: "Thực địa = 5 cm × 600 000 = 3 000 000 cm = 30 000 m = 30 km."
+        },
+        {
+          id: "p4_2_b",
+          part: "Phần IV - Câu 2: Bài toán tỉ lệ bản đồ",
+          title: "Tính khoảng cách thực tế (Tỉ lệ 1:500 000)",
+          content: "Dựa vào số ghi tỉ lệ của bản đồ sau đây: <strong>1 : 500 000</strong>, cho biết <strong>3 cm</strong> trên bản đồ ứng với bao nhiêu <strong>km</strong> trên thực địa?",
+          options: [
+            { text: "15 km", correct: true },
+            { text: "150 km", correct: false },
+            { text: "1.5 km", correct: false },
+            { text: "25 km", correct: false }
+          ],
+          explain: "Thực địa = 3 cm × 500 000 = 1 500 000 cm = 15 km."
+        },
+        {
+          id: "p4_2_c",
+          part: "Phần IV - Câu 2: Bài toán tỉ lệ bản đồ",
+          title: "Tính khoảng cách trên bản đồ (25 km, tỉ lệ 1:500 000)",
+          content: "Hai địa điểm có khoảng cách thực tế là <strong>25 km</strong>, thì trên bản đồ có tỉ lệ <strong>1 : 500 000</strong>, khoảng cách giữa hai địa điểm đó là bao nhiêu <strong>cm</strong>?",
+          options: [
+            { text: "5 cm", correct: true },
+            { text: "2.5 cm", correct: false },
+            { text: "10 cm", correct: false },
+            { text: "0.5 cm", correct: false }
+          ],
+          explain: "Đổi 25 km = 2 500 000 cm. Trên bản đồ = 2 500 000 : 500 000 = 5 cm."
+        },
+        {
+          id: "p4_2_d",
+          part: "Phần IV - Câu 2: Bài toán tỉ lệ bản đồ",
+          title: "Tính khoảng cách trên bản đồ (30 km, tỉ lệ 1:500 000)",
+          content: "Hai địa điểm có khoảng cách thực tế là <strong>30 km</strong>, thì trên bản đồ có tỉ lệ <strong>1 : 500 000</strong>, khoảng cách giữa hai địa điểm đó là bao nhiêu <strong>cm</strong>?",
+          options: [
+            { text: "6 cm", correct: true },
+            { text: "3 cm", correct: false },
+            { text: "15 cm", correct: false },
+            { text: "60 cm", correct: false }
+          ],
+          explain: "Đổi 30 km = 3 000 000 cm. Trên bản đồ = 3 000 000 : 500 000 = 6 cm."
+        }
+      ]
+    };
+
+    let currentMode = 'random_each';
+    let currentQuestions = [];
+    let userAnswers = {};
+    let isSubmitted = false;
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
       }
-    ];
-
-    let animProgress = 0;
-    let isRecording = false;
-
-    function resize() {
-      dpr = window.devicePixelRatio || 1;
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.scale(dpr, dpr);
-
-      if (width < 768) {
-        camera.zoom = Math.min((width - 20) / 1000, 0.7);
-      } else if (width < 1100) {
-        camera.zoom = Math.min((width - 40) / 1150, 0.9);
-      } else {
-        camera.zoom = 1;
-      }
-      camera.x = 0;
-      camera.y = 0;
+      return copy;
     }
-    window.addEventListener('resize', resize);
 
-    // Tính tọa độ cân xứng cho 3 nhánh
-    function getBranchCoordinates(branch) {
-      const isLeft = branch.side === 'left';
-      const dir = isLeft ? -1 : 1;
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
 
-      const mainX = dir * 250;
-      let mainY = 0;
+    // Kiểm tra quyền đổi đề: CHỈ CHO PHÉP ĐỔI KHI ĐÃ NỘP BÀI
+    function handleNewQuizClick() {
+      if (!isSubmitted) {
+        showToast("⚠️ Hãy làm xong và bấm 'Nộp Bài' trước khi đổi sang đề mới!", "warning");
+        return;
+      }
+      generateQuiz();
+    }
 
-      // Bên trái: 1 nhánh đặt ở giữa trục (y = 0)
-      // Bên phải: 2 nhánh chia đều trên/dưới (-130 và 140)
-      if (isLeft) {
-        mainY = 0;
-      } else {
-        mainY = (branch.slot === 0) ? -130 : 140;
+    function setMode(mode) {
+      if (!isSubmitted && Object.keys(userAnswers).length > 0) {
+        if (!confirm("Bạn đang làm dở bài thi. Chuyển chế độ sẽ làm mới lại toàn bộ đề bài. Bạn có chắc không?")) {
+          return;
+        }
       }
 
-      const subTotal = branch.subItems.length;
-      const subStepY = 28;
-      const subStartX = mainX + dir * 80;
-      const subStartY = mainY - ((subTotal - 1) * subStepY) / 2;
+      currentMode = mode;
+      const randomBtn = document.getElementById('mode-random-btn');
+      const allBtn = document.getElementById('mode-all-btn');
+      const badgeMode = document.getElementById('badge-mode');
 
-      const subs = branch.subItems.map((text, i) => {
+      if (mode === 'random_each') {
+        randomBtn.className = "px-3 py-1.5 rounded-lg font-medium transition-all shadow-sm bg-white text-blue-900";
+        allBtn.className = "px-3 py-1.5 rounded-lg font-medium transition-all text-white/90 hover:text-white";
+        badgeMode.textContent = "Chế độ: Rút ngẫu nhiên 1 câu mỗi phần (4 câu)";
+        badgeMode.className = "px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-100 text-blue-800";
+      } else {
+        allBtn.className = "px-3 py-1.5 rounded-lg font-medium transition-all shadow-sm bg-white text-blue-900";
+        randomBtn.className = "px-3 py-1.5 rounded-lg font-medium transition-all text-white/90 hover:text-white";
+        badgeMode.textContent = "Chế độ: Toàn bộ đề kiểm tra (22 câu)";
+        badgeMode.className = "px-2.5 py-0.5 rounded-md text-xs font-bold bg-purple-100 text-purple-800";
+      }
+      generateQuiz();
+    }
+
+    function generateQuiz() {
+      isSubmitted = false;
+      userAnswers = {};
+
+      // Khóa nút đổi đề trên thanh tiêu đề
+      const btnNew = document.getElementById('btn-new-quiz');
+      const btnText = document.getElementById('btn-new-quiz-text');
+      if (btnNew) {
+        btnNew.className = "flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold text-xs shadow-md transition-all opacity-50 cursor-not-allowed";
+        btnText.textContent = "🔒 Làm xong mới đổi";
+      }
+
+      document.getElementById('btn-submit').innerHTML = `<span>✓ Nộp Bài & Chấm Điểm</span>`;
+
+      let selectedRaw = [];
+      if (currentMode === 'random_each') {
+        selectedRaw = [
+          getRandomItem(QUESTION_BANK.part2),
+          getRandomItem(QUESTION_BANK.part3),
+          getRandomItem(QUESTION_BANK.part4_1),
+          getRandomItem(QUESTION_BANK.part4_2)
+        ];
+        currentQuestions = shuffleArray(selectedRaw);
+      } else {
+        const allList = [
+          ...QUESTION_BANK.part2,
+          ...QUESTION_BANK.part3,
+          ...QUESTION_BANK.part4_1,
+          ...QUESTION_BANK.part4_2
+        ];
+        currentQuestions = shuffleArray(allList);
+      }
+
+      // Xáo trộn đáp án của từng câu hỏi
+      currentQuestions = currentQuestions.map((q, qIndex) => {
+        let choices = [];
+        if (q.part.includes("Đúng / Sai")) {
+          choices = shuffleArray([
+            { text: "Đúng (Đ)", correct: q.isCorrect === true },
+            { text: "Sai (S)", correct: q.isCorrect === false }
+          ]);
+        } else {
+          choices = shuffleArray(q.options.map(opt => ({ ...opt })));
+        }
+
         return {
-          text: text,
-          x: subStartX + dir * 180,
-          y: subStartY + i * subStepY
+          ...q,
+          displayNumber: qIndex + 1,
+          shuffledChoices: choices
         };
       });
 
-      return { mainX, mainY, dir, subs };
+      renderQuiz();
+      updateProgressUI();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function drawCenterBulb(bx, by, time) {
-      const pulse = Math.sin(time * 0.004) * 6;
+    function generateCoordinateSvg(highlightPoint = null) {
+      const points = [
+        { label: "F", x: 70, y: 50, labelPos: "left" },
+        { label: "B", x: 310, y: 95, labelPos: "right" },
+        { label: "A", x: 130, y: 140, labelPos: "right" },
+        { label: "D", x: 250, y: 230, labelPos: "right" },
+        { label: "C", x: 370, y: 320, labelPos: "right" },
+        { label: "E", x: 70, y: 365, labelPos: "left" }
+      ];
 
-      const glowGrad = ctx.createRadialGradient(bx, by - 14, 10, bx, by - 14, 65 + pulse);
-      glowGrad.addColorStop(0, 'rgba(255, 230, 100, 0.95)');
-      glowGrad.addColorStop(0.35, 'rgba(255, 195, 45, 0.35)');
-      glowGrad.addColorStop(0.8, 'rgba(255, 160, 10, 0.06)');
-      glowGrad.addColorStop(1, 'rgba(255, 160, 10, 0)');
+      const pointsSvg = points.map(pt => {
+        const isTarget = highlightPoint && highlightPoint === pt.label;
+        const color = isTarget ? "#ef4444" : "#1d4ed8";
+        const ringColor = isTarget ? "#fca5a5" : "#93c5fd";
+        const textOffsetX = pt.labelPos === "left" ? -14 : 14;
+        const textAnchor = pt.labelPos === "left" ? "end" : "start";
 
-      ctx.fillStyle = glowGrad;
-      ctx.beginPath();
-      ctx.arc(bx, by - 14, 65 + pulse, 0, Math.PI * 2);
-      ctx.fill();
+        return `
+          <g class="${isTarget ? 'marker-active' : ''}">
+            ${isTarget ? `<circle cx="${pt.x}" cy="${pt.y}" r="12" fill="${ringColor}" opacity="0.6"/>` : ''}
+            <circle cx="${pt.x}" cy="${pt.y}" r="${isTarget ? 6 : 4.5}" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+            <text x="${pt.x + textOffsetX}" y="${pt.y + 5}" font-size="${isTarget ? 15 : 13}" font-weight="bold" fill="${isTarget ? '#b91c1c' : '#1e3a8a'}" text-anchor="${textAnchor}">${pt.label}</text>
+          </g>
+        `;
+      }).join('');
 
-      ctx.save();
-      ctx.shadowColor = '#fbc531';
-      ctx.shadowBlur = 18;
-      ctx.beginPath();
-      ctx.arc(bx, by - 14, 23, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff969';
-      ctx.fill();
-      ctx.strokeStyle = '#fbc531';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
+      return `
+        <div class="my-4 bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-4 overflow-x-auto custom-scrollbar">
+          <div class="flex items-center justify-between mb-2 px-1">
+            <span class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+              Lưới tọa độ địa lí (Kinh tuyến & Vĩ tuyến)
+            </span>
+            ${highlightPoint ? `<span class="text-xs bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">Đang hỏi: Điểm ${highlightPoint}</span>` : ''}
+          </div>
+          <svg viewBox="0 0 520 405" class="w-full max-w-[520px] mx-auto select-none" style="min-width: 320px;">
+            <rect x="70" y="50" width="360" height="315" fill="#f8fafc" stroke="#64748b" stroke-width="1.8"/>
 
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(bx - 7, by - 12);
-      ctx.lineTo(bx, by - 22);
-      ctx.lineTo(bx + 7, by - 12);
-      ctx.stroke();
+            <!-- Kinh tuyến -->
+            <line x1="70" y1="50" x2="70" y2="365" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="130" y1="50" x2="130" y2="365" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="190" y1="35" x2="190" y2="380" stroke="#0284c7" stroke-width="2.5"/>
+            <line x1="250" y1="50" x2="250" y2="365" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="310" y1="50" x2="310" y2="365" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="370" y1="50" x2="370" y2="365" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="430" y1="50" x2="430" y2="365" stroke="#94a3b8" stroke-width="1.2"/>
 
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = '#94a3b8';
-      ctx.beginPath();
-      ctx.roundRect(bx - 10, by + 8, 20, 10, [0, 0, 4, 4]);
-      ctx.fill();
-      ctx.restore();
+            <!-- Vĩ tuyến -->
+            <line x1="70" y1="50" x2="430" y2="50" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="70" y1="95" x2="430" y2="95" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="50" y1="140" x2="450" y2="140" stroke="#0284c7" stroke-width="2.5"/>
+            <line x1="70" y1="185" x2="430" y2="185" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="70" y1="230" x2="430" y2="230" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="70" y1="275" x2="430" y2="275" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="70" y1="320" x2="430" y2="320" stroke="#94a3b8" stroke-width="1.2"/>
+            <line x1="70" y1="365" x2="430" y2="365" stroke="#94a3b8" stroke-width="1.2"/>
 
-      const title = "💡 TOÁN 6: CHƯƠNG I";
-      ctx.font = "bold 12.5px 'Segoe UI', sans-serif";
-      const tw = ctx.measureText(title).width;
-      const bw = tw + 28;
-      const bh = 30;
+            <!-- Nhãn toạ độ -->
+            <text x="70" y="32" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">20°T</text>
+            <text x="130" y="32" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">10°T</text>
+            <text x="190" y="28" font-size="12" font-weight="bold" fill="#0369a1" text-anchor="middle">0°</text>
+            <text x="250" y="32" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">10°Đ</text>
+            <text x="310" y="32" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">20°Đ</text>
+            <text x="370" y="32" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">30°Đ</text>
+            <text x="430" y="32" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">40°Đ</text>
 
-      ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
-      ctx.strokeStyle = "#fbc531";
-      ctx.lineWidth = 1.8;
-      ctx.beginPath();
-      ctx.roundRect(bx - bw / 2, by + 26, bw, bh, 15);
-      ctx.fill();
-      ctx.stroke();
+            <text x="445" y="54" font-size="11" font-weight="600" fill="#475569">20°B</text>
+            <text x="445" y="99" font-size="11" font-weight="600" fill="#475569">10°B</text>
+            <text x="445" y="144" font-size="12" font-weight="bold" fill="#0369a1">0°</text>
+            <text x="445" y="189" font-size="11" font-weight="600" fill="#475569">10°N</text>
+            <text x="445" y="234" font-size="11" font-weight="600" fill="#475569">20°N</text>
+            <text x="445" y="279" font-size="11" font-weight="600" fill="#475569">30°N</text>
+            <text x="445" y="324" font-size="11" font-weight="600" fill="#475569">40°N</text>
+            <text x="445" y="369" font-size="11" font-weight="600" fill="#475569">50°N</text>
 
-      ctx.fillStyle = "#ffffff";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(title, bx, by + 41);
+            ${pointsSvg}
+          </svg>
+        </div>
+      `;
     }
 
-    function drawBranch(branch, t) {
-      if (t <= 0) return;
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
 
-      const coords = getBranchCoordinates(branch);
-      const ease = 1 - Math.pow(1 - t, 3);
+      currentQuestions.forEach(q => {
+        const card = document.createElement('div');
+        card.id = `card-${q.id}`;
+        card.className = "bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/90 transition-all hover:shadow-md";
 
-      const rootX = 0;
-      const rootY = 30;
+        let tagColor = "bg-blue-100 text-blue-800 border-blue-200";
+        if (q.part.includes("Đúng / Sai")) tagColor = "bg-amber-100 text-amber-800 border-amber-200";
+        else if (q.part.includes("Tọa độ")) tagColor = "bg-cyan-100 text-cyan-800 border-cyan-200";
+        else if (q.part.includes("Chuyển động")) tagColor = "bg-indigo-100 text-indigo-800 border-indigo-200";
+        else if (q.part.includes("tỉ lệ")) tagColor = "bg-emerald-100 text-emerald-800 border-emerald-200";
 
-      const mainCurrX = rootX + (coords.mainX - rootX) * ease;
-      const mainCurrY = rootY + (coords.mainY - rootY) * ease;
+        const passageHtml = q.passage ? `
+          <div class="mb-3.5 p-3 rounded-xl bg-slate-50 border-l-4 border-amber-400 text-xs text-slate-600 italic">
+            <span class="font-bold text-slate-700 not-italic block mb-0.5">Thông tin đọc hiểu:</span>
+            "${q.passage}"
+          </div>
+        ` : '';
 
-      // Cành chính nối từ đèn
-      ctx.save();
-      const gradMain = ctx.createLinearGradient(rootX, rootY, mainCurrX, mainCurrY);
-      gradMain.addColorStop(0, '#fbc531');
-      gradMain.addColorStop(1, branch.color);
+        const svgHtml = q.targetPoint ? generateCoordinateSvg(q.targetPoint) : '';
 
-      ctx.strokeStyle = gradMain;
-      ctx.lineWidth = 3.2;
-      ctx.beginPath();
-      ctx.moveTo(rootX, rootY);
-      ctx.bezierCurveTo(
-        rootX + coords.dir * 80, rootY,
-        mainCurrX - coords.dir * 60, mainCurrY,
-        mainCurrX, mainCurrY
-      );
-      ctx.stroke();
-      ctx.restore();
+        const choicesHtml = q.shuffledChoices.map((opt, optIdx) => {
+          const letter = String.fromCharCode(65 + optIdx);
+          const isSelected = userAnswers[q.id] === optIdx;
 
-      // Hộp cấp 1
-      ctx.save();
-      ctx.font = "bold 12.5px 'Segoe UI', sans-serif";
-      const titleW = ctx.measureText(branch.title).width + 24;
-      const titleH = 28;
-      const bx = mainCurrX - (coords.dir > 0 ? 0 : titleW);
-      const by = mainCurrY - titleH / 2;
+          return `
+            <label class="choice-item relative flex items-start p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-100/90 hover:border-slate-300 cursor-pointer transition-all ${isSelected ? 'ring-2 ring-blue-500 border-transparent bg-blue-50/60' : ''}" 
+                   onclick="selectAnswer('${q.id}', ${optIdx})">
+              <input type="radio" name="question_${q.id}" class="sr-only" ${isSelected ? 'checked' : ''} ${isSubmitted ? 'disabled' : ''}>
+              <div class="flex items-center h-5 mr-3">
+                <span class="choice-letter w-7 h-7 rounded-lg border border-slate-300 bg-white font-bold text-xs flex items-center justify-center text-slate-700 shadow-sm">
+                  ${letter}
+                </span>
+              </div>
+              <div class="text-xs sm:text-sm font-medium text-slate-800 flex-1 leading-relaxed">
+                ${opt.text}
+              </div>
+            </label>
+          `;
+        }).join('');
 
-      ctx.fillStyle = "rgba(15, 23, 42, 0.94)";
-      ctx.strokeStyle = branch.color;
-      ctx.lineWidth = 1.8;
-      ctx.beginPath();
-      ctx.roundRect(bx, by, titleW, titleH, 6);
-      ctx.fill();
-      ctx.stroke();
+        card.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-slate-900 text-white font-black text-sm flex items-center justify-center shadow">
+                ${q.displayNumber}
+              </span>
+              <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${tagColor}">
+                ${q.part}
+              </span>
+            </div>
+            <span class="text-xs font-semibold text-slate-400">${q.title}</span>
+          </div>
 
-      ctx.fillStyle = branch.color;
-      ctx.textAlign = "left";
-      ctx.textBaseline = "middle";
-      ctx.fillText(branch.title, bx + 12, mainCurrY);
-      ctx.restore();
+          ${passageHtml}
 
-      // Dây nét đứt nối vào các thẻ con
-      const mainEdgeX = coords.dir > 0 ? (bx + titleW) : bx;
+          <div class="text-sm sm:text-base font-semibold text-slate-900 mb-3 leading-snug">
+            ${q.content}
+          </div>
 
-      coords.subs.forEach((sub, si) => {
-        const subThreshold = 0.2 + si * 0.1;
-        if (ease >= subThreshold) {
-          const subEase = Math.min(1, (ease - subThreshold) / 0.15);
-          const subCurrX = mainEdgeX + (sub.x - mainEdgeX) * subEase;
-          const subCurrY = mainCurrY + (sub.y - mainCurrY) * subEase;
+          ${svgHtml}
 
-          ctx.save();
-          ctx.strokeStyle = branch.color;
-          ctx.lineWidth = 1.4;
-          ctx.setLineDash([4, 3]);
-          ctx.beginPath();
-          ctx.moveTo(mainEdgeX, mainCurrY);
-          ctx.bezierCurveTo(
-            mainEdgeX + coords.dir * 40, mainCurrY,
-            subCurrX - coords.dir * 40, subCurrY,
-            subCurrX, subCurrY
-          );
-          ctx.stroke();
-          ctx.restore();
+          <div class="grid grid-cols-1 ${q.shuffledChoices.length === 2 ? 'sm:grid-cols-2' : ''} gap-2.5 mt-4" id="choices-${q.id}">
+            ${choicesHtml}
+          </div>
 
-          // Thẻ con
-          ctx.save();
-          ctx.font = "11px 'Segoe UI', sans-serif";
-          const subW = ctx.measureText(sub.text).width + 16;
-          const subH = 21;
-          const sx = coords.dir > 0 ? subCurrX : (subCurrX - subW);
-          const sy = subCurrY - subH / 2;
+          <div id="solution-${q.id}" class="hidden mt-4 pt-4 border-t border-slate-200 text-xs sm:text-sm space-y-2"></div>
+        `;
 
-          ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
-          ctx.strokeStyle = branch.color;
-          ctx.lineWidth = 1.0;
-          ctx.beginPath();
-          ctx.roundRect(sx, sy, subW, subH, 4);
-          ctx.fill();
-          ctx.stroke();
+        container.appendChild(card);
+      });
+    }
 
-          ctx.fillStyle = "#e2e8f0";
-          ctx.textAlign = "left";
-          ctx.textBaseline = "middle";
-          ctx.fillText(sub.text, sx + 8, subCurrY);
-          ctx.restore();
+    function selectAnswer(questionId, choiceIndex) {
+      if (isSubmitted) return;
+
+      userAnswers[questionId] = choiceIndex;
+
+      const choicesContainer = document.getElementById(`choices-${questionId}`);
+      if (choicesContainer) {
+        const labels = choicesContainer.querySelectorAll('.choice-item');
+        labels.forEach((label, idx) => {
+          if (idx === choiceIndex) {
+            label.className = "choice-item relative flex items-start p-3.5 sm:p-4 rounded-xl border border-transparent ring-2 ring-blue-500 bg-blue-50/70 cursor-pointer transition-all";
+            const letterSpan = label.querySelector('.choice-letter');
+            if (letterSpan) letterSpan.className = "choice-letter w-7 h-7 rounded-lg border border-blue-500 bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-sm";
+          } else {
+            label.className = "choice-item relative flex items-start p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-100 hover:border-slate-300 cursor-pointer transition-all";
+            const letterSpan = label.querySelector('.choice-letter');
+            if (letterSpan) letterSpan.className = "choice-letter w-7 h-7 rounded-lg border border-slate-300 bg-white font-bold text-xs flex items-center justify-center text-slate-700 shadow-sm";
+          }
+        });
+      }
+
+      updateProgressUI();
+    }
+
+    function updateProgressUI() {
+      const answeredCount = Object.keys(userAnswers).length;
+      const totalCount = currentQuestions.length;
+      const percent = totalCount > 0 ? (answeredCount / totalCount) * 100 : 0;
+
+      const progressText = document.getElementById('progress-text');
+      const progressBar = document.getElementById('progress-bar');
+      const submitHint = document.getElementById('submit-hint');
+
+      if (progressText) progressText.textContent = `${answeredCount} / ${totalCount}`;
+      if (progressBar) progressBar.style.width = `${percent}%`;
+
+      if (submitHint) {
+        if (answeredCount === totalCount) {
+          submitHint.textContent = "Bạn đã hoàn thành đủ các câu hỏi! Hãy bấm 'Nộp Bài' để mở khóa đổi đề.";
+          submitHint.className = "text-xs sm:text-sm text-emerald-600 font-semibold flex items-center gap-2";
+        } else {
+          submitHint.textContent = `Đã làm ${answeredCount}/${totalCount} câu. Còn ${totalCount - answeredCount} câu chưa chọn.`;
+          submitHint.className = "text-xs sm:text-sm text-slate-600 flex items-center gap-2";
+        }
+      }
+    }
+
+    function submitExam() {
+      if (isSubmitted) {
+        document.getElementById('result-modal').classList.remove('hidden');
+        return;
+      }
+
+      const answeredCount = Object.keys(userAnswers).length;
+      const totalCount = currentQuestions.length;
+
+      if (answeredCount < totalCount) {
+        showToast(`Bạn còn ${totalCount - answeredCount} câu chưa làm. Hãy hoàn thành tất cả nhé!`, "warning");
+      }
+
+      isSubmitted = true;
+      let correctCount = 0;
+
+      // MỞ KHÓA NÚT ĐỔI ĐỀ TRÊN THANH TIÊU ĐỀ
+      const btnNew = document.getElementById('btn-new-quiz');
+      const btnText = document.getElementById('btn-new-quiz-text');
+      if (btnNew) {
+        btnNew.className = "flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white font-semibold text-xs shadow-md transition-all cursor-pointer";
+        btnText.textContent = "🎲 Đổi Đề Mới";
+      }
+
+      // Duyệt và chấm bài
+      currentQuestions.forEach(q => {
+        const selectedIdx = userAnswers[q.id];
+        const solutionDiv = document.getElementById(`solution-${q.id}`);
+        const choicesContainer = document.getElementById(`choices-${q.id}`);
+        const labels = choicesContainer ? choicesContainer.querySelectorAll('.choice-item') : [];
+
+        let isQuestionCorrect = false;
+        if (selectedIdx !== undefined) {
+          const selectedChoice = q.shuffledChoices[selectedIdx];
+          if (selectedChoice && selectedChoice.correct) {
+            isQuestionCorrect = true;
+            correctCount++;
+          }
+        }
+
+        labels.forEach((label, idx) => {
+          label.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50/70', 'hover:bg-slate-100');
+          const isThisChoiceCorrect = q.shuffledChoices[idx].correct;
+          const isThisChoiceSelected = selectedIdx === idx;
+          const letterSpan = label.querySelector('.choice-letter');
+
+          if (isThisChoiceCorrect) {
+            label.className = "choice-item relative flex items-start p-3.5 sm:p-4 rounded-xl border border-emerald-500 bg-emerald-50/90 text-emerald-950 font-medium";
+            if (letterSpan) letterSpan.className = "choice-letter w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shadow-sm";
+          } else if (isThisChoiceSelected && !isThisChoiceCorrect) {
+            label.className = "choice-item relative flex items-start p-3.5 sm:p-4 rounded-xl border border-red-500 bg-red-50/90 text-red-950 font-medium";
+            if (letterSpan) letterSpan.className = "choice-letter w-7 h-7 rounded-lg bg-red-600 text-white font-bold text-xs flex items-center justify-center shadow-sm";
+          } else {
+            label.className = "choice-item relative flex items-start p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-100/50 opacity-60";
+          }
+        });
+
+        if (solutionDiv) {
+          solutionDiv.classList.remove('hidden');
+          const statusBadge = isQuestionCorrect
+            ? `<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-100 text-emerald-800 font-bold text-xs"><svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Bạn đã trả lời ĐÚNG</div>`
+            : `<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-100 text-red-800 font-bold text-xs"><svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> ${selectedIdx === undefined ? 'Chưa trả lời' : 'Bạn trả lời CHƯA CHÍNH XÁC'}</div>`;
+
+          solutionDiv.innerHTML = `
+            ${statusBadge}
+            <div class="mt-2.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 leading-relaxed">
+              <span class="font-bold text-slate-900 block mb-1">💡 Lời giải & Kiến thức trọng tâm:</span>
+              ${q.explain}
+            </div>
+          `;
         }
       });
+
+      const score = ((correctCount / totalCount) * 10).toFixed(1);
+      const percent = Math.round((correctCount / totalCount) * 100);
+
+      document.getElementById('res-score').textContent = score;
+      document.getElementById('res-correct').textContent = `${correctCount}/${totalCount}`;
+      document.getElementById('res-percent').textContent = `${percent}%`;
+
+      const evalText = document.getElementById('res-evaluation');
+      const badgeIcon = document.getElementById('result-badge-icon');
+      if (percent >= 80) {
+        badgeIcon.textContent = "🌟";
+        evalText.innerHTML = "Xuất sắc! Bạn nắm rất chắc hệ thống kinh vĩ tuyến, lưới tọa độ và bài toán tỉ lệ bản đồ.";
+      } else if (percent >= 50) {
+        badgeIcon.textContent = "👍";
+        evalText.innerHTML = "Khá tốt! Bạn đã làm đúng đa số câu hỏi. Hãy xem lại lời giải chi tiết cho các câu sai để nhớ lâu hơn.";
+      } else {
+        badgeIcon.textContent = "📖";
+        evalText.innerHTML = "Cần cố gắng thêm! Hãy đọc kĩ phần lý thuyết kinh vĩ tuyến và các bước đổi đơn vị ở lời giải chi tiết.";
+      }
+
+      document.getElementById('result-modal').classList.remove('hidden');
+      document.getElementById('btn-submit').innerHTML = `<span>✓ Xem Lại Kết Quả</span>`;
+      showToast("Đã mở khóa nút Đổi Đề Mới!", "success");
     }
 
-    function render(time) {
-      if (animProgress < 1) {
-        animProgress += 0.012;
-        if (animProgress > 1) animProgress = 1;
-      }
-
-      ctx.clearRect(0, 0, width, height);
-
-      ctx.save();
-      ctx.translate(width / 2 + camera.x, height / 2 + camera.y);
-      ctx.scale(camera.zoom, camera.zoom);
-
-      treeData.forEach(b => drawBranch(b, animProgress));
-      drawCenterBulb(0, 0, time);
-
-      ctx.restore();
-
-      requestAnimationFrame(render);
+    function closeResultModal() {
+      document.getElementById('result-modal').classList.add('hidden');
     }
 
-    // ==== ĐIỀU KHIỂN VIEW ====
-    function zoomIn() { camera.zoom = Math.min(camera.zoom * 1.2, 2.5); }
-    function zoomOut() { camera.zoom = Math.max(camera.zoom / 1.2, 0.35); }
-    function resetView() { resize(); }
-    function replayAnimation() { animProgress = 0; }
+    function resetAnswers() {
+      userAnswers = {};
+      isSubmitted = false;
+      generateQuiz();
+      showToast("Đã làm lại từ đầu!", "info");
+    }
 
-    const vp = document.getElementById('viewport');
-    vp.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      dragStart = { x: e.clientX - camera.x, y: e.clientY - camera.y };
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      camera.x = e.clientX - dragStart.x;
-      camera.y = e.clientY - dragStart.y;
-    });
-    window.addEventListener('mouseup', () => isDragging = false);
+    function showToast(message, type = "info") {
+      const toast = document.getElementById('toast');
+      const msg = document.getElementById('toast-msg');
+      const icon = document.getElementById('toast-icon');
 
-    vp.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-      camera.zoom = Math.min(Math.max(camera.zoom * zoomFactor, 0.3), 2.5);
-    }, { passive: false });
+      if (!toast) return;
 
-    vp.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        isDragging = true;
-        dragStart = { x: e.touches[0].clientX - camera.x, y: e.touches[0].clientY - camera.y };
-      } else if (e.touches.length === 2) {
-        isDragging = false;
-        initialPinchDist = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
-        initialZoom = camera.zoom;
-      }
-    });
-
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1 && isDragging) {
-        camera.x = e.touches[0].clientX - dragStart.x;
-        camera.y = e.touches[0].clientY - dragStart.y;
-      } else if (e.touches.length === 2 && initialPinchDist) {
-        const dist = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
-        camera.zoom = Math.min(Math.max(initialZoom * (dist / initialPinchDist), 0.3), 2.5);
-      }
-    });
-
-    window.addEventListener('touchend', () => {
-      isDragging = false;
-      initialPinchDist = null;
-    });
-
-    // ==== XUẤT VIDEO CHUẨN MP4 ====
-    async function exportVideo() {
-      if (isRecording) return;
-      isRecording = true;
-      recBtn.classList.add('recording');
-      recBtn.innerHTML = "⏳ Đang quay...";
-
-      resetView();
-      animProgress = 0;
-
-      const stream = canvas.captureStream(60);
-      
-      // Chọn codec ưu tiên MP4 H.264
-      let chosenType = 'video/mp4;codecs=avc1';
-      if (!MediaRecorder.isTypeSupported(chosenType)) {
-        chosenType = 'video/mp4';
-      }
-      if (!MediaRecorder.isTypeSupported(chosenType)) {
-        chosenType = 'video/webm;codecs=h264';
-      }
-      if (!MediaRecorder.isTypeSupported(chosenType)) {
-        chosenType = 'video/webm';
-      }
-
-      const recorder = new MediaRecorder(stream, {
-        mimeType: chosenType,
-        videoBitsPerSecond: 6000000
-      });
-
-      const chunks = [];
-      recorder.ondataavailable = e => {
-        if (e.data.size > 0) chunks.push(e.data);
-      };
-
-      recorder.onstop = () => {
-        // Luôn ép kiểu blob xuất ra đuôi .mp4
-        const blob = new Blob(chunks, { type: 'video/mp4' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'so_do_tu_duy_toan6.mp4';
-        a.click();
-        URL.revokeObjectURL(url);
-
-        recBtn.classList.remove('recording');
-        recBtn.innerHTML = "🎥 Xuất Video MP4";
-        isRecording = false;
-      };
-
-      recorder.start();
-
+      msg.textContent = message;
+      if (type === "success") icon.textContent = "🎉";
+      else if (type === "warning") icon.textContent = "⚠️";
+      else icon.textContent = "ℹ️";
+      toast.classList.remove('opacity-0', 'pointer-events-none');
       setTimeout(() => {
-        recorder.stop();
-      }, 4200);
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3000);
     }
 
-    resize();
-    requestAnimationFrame(render);
+    window.onload = function () {
+      generateQuiz();
+    };
   </script>
 </body>
 </html>
